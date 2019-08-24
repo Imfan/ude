@@ -43,6 +43,8 @@ services:
         - http_proxy
         - https_proxy
         - no_proxy
+
+    container_name: nginx
     volumes:
       # 项目地址映射
       - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
@@ -67,6 +69,8 @@ services:
     volumes:
       - ./redis/${REDIS_VERSION}/redis.conf:/usr/local/etc/redis/redis.conf
       - ${REDIS_DATA_PATH}:/data
+
+    container_name: redis
     ports:
       - "${REDIS_PORT}:6379"
     networks:
@@ -78,6 +82,7 @@ services:
       context: ./mysql/${MYSQL_VERSION}/
       args:
         - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    container_name: mysql
     volumes:
       - ${MYSQL_DATA}:/mysql/data/
     ports:
@@ -89,6 +94,7 @@ services:
   mongodb:
     build:
       context: ./mongodb/${MONGODB_VERSION}/
+    container_name: mongodb
     volumes:
       - ${MONGODB_DATA}:/data/db
     ports:
@@ -100,6 +106,8 @@ services:
   elasticsearch:
     build:
       context: ./elasticsearch/
+
+    container_name: elasticsearch
     environment:
       - bootstrap.memory_lock=true
       # 设置堆内存的，以及最大使用堆内存
@@ -122,6 +130,8 @@ services:
   kibana:
     build:
       context: ./kibana/
+
+    container_name: kibana
 #    volumes:
 #      - ./kibana.yml:/usr/share/kibana/config/kibana.yml
     environment:
