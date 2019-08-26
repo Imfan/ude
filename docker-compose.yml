@@ -84,6 +84,8 @@ services:
         - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
       - ${MYSQL_DATA}:/mysql/data/
+      - ${MYSQL_LOG_PATH}:/var/log/mysql/
+      - ./mysql/${MYSQL_VERSION}/my.cnf:/etc/mysql/my.cnf
     ports:
       - "${MYSQL_PORT}:3306"
     networks:
