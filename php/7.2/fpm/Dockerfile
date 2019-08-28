@@ -2,7 +2,8 @@ FROM php:7.2-fpm
 
 COPY sources.list /etc/apt/sources.list
 
-RUN apt-get update && apt-get install -yqq vim git && pecl channel-update pecl.php.net
+RUN apt-get update && apt-get install -yqq vim git && pecl channel-update pecl.php.net \
+&& cp -f /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 ###########################################################################
 # PHP REDIS EXTENSION
@@ -136,11 +137,10 @@ RUN set -xe && chmod -R 777 /usr/local/bin/composer \
 ###########################################################################
 # Check PHP version:
 ###########################################################################
+ARG PHP_VERSION=${PHP_VERSION}
+RUN set -xe; php -v | head -n 1 | grep -q "PHP ${PHP_VERSION}"
 
-RUN set -xe; php -v | head -n 1 | grep -q "PHP ${PHP_VERSION}."
 
-
-COPY ./laravel.ini /usr/local/etc/php/conf.d
 COPY ./xlaravel.pool.conf /usr/local/etc/php-fpm.d/
 
 USER root

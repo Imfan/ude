@@ -6,7 +6,8 @@ COPY sources.list /etc/apt/sources.list
 RUN apt-get update \
 	&& apt-get install -yqq vim \
 	&& apt-get install -yqq logrotate \
-	&& apt-get install -yqq openssl
+	&& apt-get install -yqq openssl \
+	&& cp -f /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 ARG PHP_UPSTREAM_CONTAINER=php-fpm
 ARG PHP_UPSTREAM_PORT=9000

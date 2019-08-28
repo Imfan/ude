@@ -5,8 +5,8 @@ COPY my.cnf /etc/mysql/my.cnf
 
 RUN apt-get update \
 	&& apt-get install -yqq vim \
-	&& apt-get install -yqq logrotate \
-	&& apt-get install -yqq openssl
+	&& apt-get install -yqq openssl \
+	&& cp -f /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 
 
