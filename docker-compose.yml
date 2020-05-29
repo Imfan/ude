@@ -28,9 +28,9 @@ services:
       - ./php/${PHP_VERSION}/fpm/opcache.ini:/usr/local/etc/php/conf.d/opcache.ini
       - ./php/${PHP_VERSION}/fpm/mysql.ini:/usr/local/etc/php/conf.d/mysql.ini
       # 项目地址映射
-      - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+      - ${DATA}${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
       # 日志地址映射
-      - ${PHP_LOG_PATH}:/var/log/php/
+      - ${DATA}${PHP_LOG_PATH}:/var/log/php/
     networks:
       - backend
     expose:
@@ -49,9 +49,9 @@ services:
 
     volumes:
       # 项目地址映射
-      - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+      - ${DATA}${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
       # 日志地址映射
-      - ${NGINX_HOST_LOG_PATH}:/var/log/nginx
+      - ${DATA}${NGINX_HOST_LOG_PATH}:/var/log/nginx
       # 配置文件映射
       - ${NGINX_SITES_PATH}:/etc/nginx/sites-available
       # ssl
@@ -70,7 +70,7 @@ services:
       context: ./redis/${REDIS_VERSION}/
     volumes:
       - ./redis/${REDIS_VERSION}/redis.conf:/usr/local/etc/redis/redis.conf
-      - ${REDIS_DATA_PATH}:/data
+      - ${DATA}${REDIS_DATA_PATH}:/data
     ports:
       - "${REDIS_PORT}:6379"
     networks:
@@ -83,8 +83,8 @@ services:
       args:
         - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
-      - ${MYSQL_DATA}:/mysql/data/
-      - ${MYSQL_LOG_PATH}:/var/log/mysql/
+      - ${DATA}${MYSQL_DATA}:/mysql/data/
+      - ${DATA}${MYSQL_LOG_PATH}:/var/log/mysql/
       - ./mysql/${MYSQL_VERSION}/my.cnf:/etc/mysql/my.cnf
     ports:
       - "${MYSQL_PORT}:3306"
@@ -96,7 +96,7 @@ services:
     build:
       context: ./mongodb/${MONGODB_VERSION}/
     volumes:
-      - ${MONGODB_DATA}:/data/db
+      - ${DATA}${MONGODB_DATA}:/data/db
     ports:
       - "${MONGODB_PORT}:27017"
     networks:
@@ -118,7 +118,7 @@ services:
         # 系统硬限制，只能root用户提高
         hard: 3000
     volumes:
-      - ${ES_DATA}:/usr/share/elasticsearch/data
+      - ${DATA}${ES_DATA}:/usr/share/elasticsearch/data
     ports:
       - ${ES_HTTP_PORT}:9200
     networks:

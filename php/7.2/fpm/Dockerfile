@@ -20,6 +20,15 @@ RUN if [ ${INSTALL_PHPREDIS} = true ]; then \
 
 RUN docker-php-ext-install pdo_mysql
 
+###########################################################################
+# Zip EXTENSION
+###########################################################################
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends libzip-dev && \
+    rm -r /var/lib/apt/lists/* && \
+    docker-php-ext-install -j$(nproc) zip
+
 
 ###########################################################################
 # Mysqli:
@@ -31,18 +40,33 @@ RUN if [ ${INSTALL_MYSQLI} = true ]; then \
     docker-php-ext-install mysqli \
 ;fi
 
+
+###########################################################################
+# Yaf:
+###########################################################################
+
+ARG INSTALL_YAF=false
+
+RUN if [ ${INSTALL_YAF} = true ]; then \
+    docker-php-ext-install yaf \
+;fi
+
 ###########################################################################
 # Opcache:
 ###########################################################################
 
-ARG INSTALL_OPCACHE=false
-
-RUN if [ ${INSTALL_OPCACHE} = true ]; then \
-    docker-php-ext-install opcache \
-;fi
+#ARG INSTALL_OPCACHE=false
+#
+#RUN if [ ${INSTALL_OPCACHE} = true ]; then \
+#    docker-php-ext-install opcache \
+RUN    docker-php-ext-install opcache
+#;fi
 
 # Copy opcache configration
 COPY ./opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+
+
+
 
 
 ###########################################################################
@@ -68,6 +92,7 @@ RUN if [ ${INSTALL_SWOOLE} = true ]; then \
 
 
 
+
 ###########################################################################
 # MongoDB:
 ###########################################################################
@@ -83,6 +108,16 @@ RUN if [ ${INSTALL_MONGO} = true ]; then \
     pecl install mongodb && \
     docker-php-ext-enable mongodb \
 ;fi
+
+
+
+###########################################################################
+# GD库:
+###########################################################################
+
+#echo "deb http://mirrors.163.com/debian/ stretch main contrib non-free\ndeb http://mirrors.163.com/debian/ stretch-updates main contrib non-free\ndeb http://mirrors.163.com/debian/ stretch-backports main contrib non-free" > /etc/apt/sources.list  #软件源修改为网易镜像站源
+RUN apt update  && apt install -y libwebp-dev libjpeg-dev libpng-dev libfreetype6-dev && docker-php-source extract && cd /usr/src/php/ext/gd   && docker-php-ext-configure gd --with-webp-dir=/usr/include/webp --with-jpeg-dir=/usr/include --with-png-dir=/usr/include --with-freetype-dir=/usr/include/freetype2 &&   docker-php-ext-install gd      && php -m | grep gd
+
 
 
 
@@ -122,6 +157,8 @@ COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 RUN sed -i "s/xdebug.remote_autostart=0/xdebug.remote_autostart=1/" /usr/local/etc/php/conf.d/xdebug.ini && \
     sed -i "s/xdebug.remote_enable=0/xdebug.remote_enable=1/" /usr/local/etc/php/conf.d/xdebug.ini && \
     sed -i "s/xdebug.cli_color=0/xdebug.cli_color=1/" /usr/local/etc/php/conf.d/xdebug.ini
+
+
 
 
 ###########################################################################
